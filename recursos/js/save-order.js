@@ -1,0 +1,1 @@
+async function saveOrderToFirestore(order){ if(typeof firebase === 'undefined' || !firebase.firestore){ console.warn('Firebase no inicializado'); return null; } try{ const db = firebase.firestore(); const doc = await db.collection('orders').add(order); return doc.id; }catch(e){ console.error(e); return null; } }
