@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Trabajadores - FashionStore M&V</title>
+  <link rel="stylesheet" href="recursos/css/admin.css">
+</head>
+
+<body>
+  <header>
+    <h1>Panel de Trabajadores</h1>
+    <p>Consulta y gestiona los pedidos registrados</p>
+  </header>
+
+  <button id="logoutBtn" style="display:none;">Cerrar sesión</button>
+
+  <!-- LOGIN -->
+  <div class="panel" id="loginSection">
+    <h2 style="text-align:center; color:#7b4eff;">Inicia sesión con tu cuenta autorizada</h2>
+    <div style="text-align:center;">
+      <div class="input-container">
+        <input id="email" type="email" placeholder="Correo">
+      </div>
+
+      <div class="password-container">
+        <input id="password" type="password" placeholder="Contraseña">
+        <button type="button" id="togglePassword" class="toggle-password">👁️</button>
+      </div>
+
+      <button id="loginBtn" class="cerrar">Ingresar</button>
+    </div>
+  </div>
+
+  <!-- PANEL DE PEDIDOS -->
+  <div class="panel" id="dataSection" style="display:none;">
+    <div class="buscador">
+      <input type="text" id="searchInput" placeholder="Buscar por código de pedido... 🔍">
+    </div>
+    <div id="pedidosContainer">
+      <p style="text-align:center; color:#777;">Cargando pedidos...</p>
+    </div>
+  </div>
+
+  <!-- Firebase scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { 
+      getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut 
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { 
+      getFirestore, collection, deleteDoc, doc, orderBy, query, onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCHYo8LYSyOqgr6tBgo9RXODH0KRwZeowQ",
+      authDomain: "live-de-eso.firebaseapp.com",
+      projectId: "live-de-eso",
+      storageBucket: "live-de-eso.firebasestorage.app",
+      messagingSenderId: "250545251960",
+      appId: "1:250545251960:web:94ad354f2650d46d32af8d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loginSection = document.getElementById('loginSection');
+    const dataSection = document.getElementById('dataSection');
+    const pedidosContainer = document.getElementById('pedidosContainer');
+    const searchInput = document.getElementById('searchInput');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // === Mostrar / ocultar contraseña ===
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    togglePassword.addEventListener("click", () => {
+      const type = passwordInput.type === "password" ? "text" : "password";
+      passwordInput.type = type;
+      togglePassword.textContent = type === "password" ? "👁️" : "🙈";
+    });
+
+    // === LOGIN ===
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const password = passwordInput.value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        alert("❌ Error al iniciar sesión: " + error.message);
+      }
+    });
+
+    // === LOGOUT ===
+    logoutBtn.addEventListener('click', async () => {
+      await signOut(auth);
+    });
+
+    // === SESIÓN ===
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        loginSection.style.display = 'none';
+        dataSection.style.display = 'block';
+        logoutBtn.style.display = 'block';
+        cargarPedidos(); // inicia el listener en tiempo real
+      } else {
+        loginSection.style.display = 'block';
+        dataSection.style.display = 'none';
+        logoutBtn.style.display = 'none';
+      }
+    });
+
+    // === CARGAR PEDIDOS (en tiempo real) ===
+    let unsubscribePedidos = null;
+    function cargarPedidos() {
+      pedidosContainer.innerHTML = '<p style="text-align:center; color:#777;">Cargando pedidos...</p>';
+      const pedidosRef = collection(db, "pedidos");
+      const q = query(pedidosRef, orderBy("fecha", "desc"));
+
+      // Si ya hay un listener activo, lo cancelamos antes de crear uno nuevo
+      if (unsubscribePedidos) {
+        unsubscribePedidos();
+        unsubscribePedidos = null;
+      }
+
+      // onSnapshot para actualizaciones en tiempo real
+      unsubscribePedidos = onSnapshot(q, (snapshot) => {
+        const pedidos = [];
+        snapshot.forEach(docSnap => pedidos.push({ id: docSnap.id, ...docSnap.data() }));
+        mostrarPedidos(pedidos);
+      }, (error) => {
+        console.error("Error al escuchar pedidos:", error);
+        pedidosContainer.innerHTML = '<p style="text-align:center; color:#777;">Error al cargar pedidos.</p>';
+      });
+
+      // buscar en memoria local cuando el input cambie (filtrado del listado ya cargado por onSnapshot)
+      searchInput.addEventListener('input', () => {
+        // Nota: onSnapshot mantiene 'mostrarPedidos' actualizado vía snapshot,
+        // aquí filtramos los elementos ya renderizados buscando por código dentro del DOM.
+        const filtro = searchInput.value.toLowerCase();
+        const tarjetas = pedidosContainer.querySelectorAll('.pedido');
+        tarjetas.forEach(t => {
+          const codigoElem = t.querySelector('h3');
+          const codigoText = codigoElem ? codigoElem.textContent.toLowerCase() : '';
+          t.style.display = codigoText.includes(filtro) ? 'block' : 'none';
+        });
+      });
+    }
+
+    // === MOSTRAR PEDIDOS ===
+    function mostrarPedidos(lista) {
+      if (lista.length === 0) {
+        pedidosContainer.innerHTML = '<p style="text-align:center; color:#777;">No hay pedidos registrados.</p>';
+        return;
+      }
+
+      pedidosContainer.innerHTML = '';
+      lista.forEach(p => {
+        // Manejo robusto de la fecha:
+        // - Si viene como Timestamp de Firestore: usar seconds o toDate()
+        // - Si viene como string (por compatibilidad con pedidos antiguos): parsearlo
+        let fechaTexto = 'Sin fecha';
+        try {
+          if (p.fecha?.seconds) {
+            fechaTexto = new Date(p.fecha.seconds * 1000).toLocaleString();
+          } else if (p.fecha?.toDate && typeof p.fecha.toDate === 'function') {
+            fechaTexto = p.fecha.toDate().toLocaleString();
+          } else if (typeof p.fecha === 'string' && p.fecha.length > 0) {
+            const d = new Date(p.fecha);
+            fechaTexto = isNaN(d.getTime()) ? 'Sin fecha' : d.toLocaleString();
+          }
+        } catch (e) {
+          fechaTexto = 'Sin fecha';
+        }
+
+        const div = document.createElement('div');
+        div.className = 'pedido';
+        div.innerHTML = `
+          <h3>${p.codigo || '(Sin código)'}</h3>
+          <small><b>Fecha:</b> ${fechaTexto}</small><br>
+          <small><b>Total:</b> $${(p.total || 0).toLocaleString('es-CL')}</small>
+          <div class="productos">
+            ${p.productos?.map(pr => `• ${pr.nombre} x${pr.cantidad} - $${(pr.subtotal || pr.cantidad * pr.precio).toLocaleString('es-CL')}`).join('<br>') || 'Sin detalles'}
+          </div>
+          <button class="delete-btn" data-id="${p.id}">🗑️ Eliminar pedido</button>
+        `;
+        pedidosContainer.appendChild(div);
+      });
+
+      // Botones de eliminar
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const id = e.target.getAttribute('data-id');
+          if (!confirm("¿Seguro que deseas eliminar este pedido?")) return;
+          try {
+            await deleteDoc(doc(db, "pedidos", id));
+            alert("✅ Pedido eliminado correctamente");
+            // onSnapshot actualizará la lista automáticamente
+          } catch (err) {
+            alert("❌ Error al eliminar el pedido: " + err.message);
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

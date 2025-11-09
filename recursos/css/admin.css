@@ -1,0 +1,179 @@
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fff6fb, #f3e3ff);
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: white;
+      background: linear-gradient(90deg, #ff80c0, #a080ff);
+      border-radius: 0 0 30px 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin: 1rem 0 0.5rem;
+    }
+
+    .panel {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+
+    .buscador {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .buscador input {
+      width: 80%;
+      max-width: 400px;
+      padding: 10px 15px;
+      border-radius: 25px;
+      border: 2px solid #d63384;
+      font-size: 16px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .buscador input:focus {
+      border-color: #9b42f5;
+      box-shadow: 0 0 10px rgba(155, 66, 245, 0.5);
+    }
+
+    .pedido {
+      border: 2px solid #e0c7ff;
+      border-radius: 15px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: #faf7ff;
+      transition: transform 0.3s;
+      position: relative;
+    }
+
+    .pedido:hover {
+      transform: translateY(-3px);
+    }
+
+    .pedido h3 {
+      color: #7b4eff;
+      margin: 0 0 0.5rem;
+    }
+
+    .pedido small {
+      color: #555;
+    }
+
+    .productos {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #444;
+      background: #fff;
+      padding: 0.8rem;
+      border-radius: 10px;
+    }
+
+    .cerrar {
+      background: #ff4eb8;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .cerrar:hover {
+      background: #a080ff;
+    }
+
+    #logoutBtn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: #9d63ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+
+    #logoutBtn:hover {
+      transform: scale(1.05);
+      background: #7b4eff;
+    }
+
+    .delete-btn {
+      background: linear-gradient(90deg, #ff4e4e, #ff8080);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s, background 0.3s;
+      margin-top: 10px;
+    }
+
+    .delete-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #ff2e2e, #ff4e4e);
+    }
+
+    .input-container {
+      width: 70%;
+      margin: 0 auto 15px auto;
+    }
+
+    .input-container input {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 2px solid #9d63ff;
+      font-size: 16px;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
+    .password-container {
+      position: relative;
+      width: 70%;
+      margin: 0 auto 20px auto;
+    }
+
+    .password-container input {
+      width: 100%;
+      padding: 10px 40px 10px 15px;
+      border-radius: 10px;
+      border: 2px solid #9d63ff;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #9d63ff;
+      font-size: 18px;
+    }
