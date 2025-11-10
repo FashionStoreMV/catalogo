@@ -2,8 +2,6 @@
 <html lang="es">
 
 <head>
-    <!-- NOTA: Los enlaces a recursos locales (img/wlogo/Logo FashionStore.png, recursos/img/...) han sido mantenidos,
-               pero no se mostrarán en un entorno que no pueda acceder a estos archivos. -->
     <link rel="stylesheet" href="img/wlogo/Logo FashionStore.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,12 +13,11 @@
     <div class="linea-superior"></div>
 
     <header>
-        <img src="recursos/img/wlogo/Logo FashionStore.png" alt="Logo FashionStore" width="110" height="110"
-            class="logo">
+        <img src="recursos/img/wlogo/Logo FashionStore.png" alt="Logo FashionStore" width="110" height="110" class="logo">
         <h1>Bienvenido a <span>FashionStore M&V</span></h1>
         <p>Descubre nuestro catálogo de ropa para <b><u>Mujer</u></b> y <b><u>Hombre</u></b>.</p>
 
-        <!-- Botón del Carrito (NUEVO) -->
+        <!-- Botón del Carrito -->
         <button id="cartButton">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -39,12 +36,10 @@
         <a href="#gorras" class="rectangulo">Sección Gorras</a>
     </div>
 
-    <!--barra de busqueda-->
+    <!-- Buscador -->
     <div class="buscador">
         <input type="text" id="searchInput" placeholder="Buscar producto... 🔍">
     </div>
-
-    <!-- NOTA IMPORTANTE: Para que el carrito funcione, hemos añadido los atributos 'data-name' y 'data-price' a los menu-item. -->
 
     <!-- Sección Mujer -->
     <div id="mujer" class="categoria">
@@ -94,11 +89,10 @@
         </section>
     </div>
 
-    <!-- Seccion Hombre-->
+    <!-- Sección Hombre -->
     <div id="hombre" class="categoria">
         <h2 style="text-align: center; background-color: #a2acff;">Hombre:</h2>
         <section class="menu">
-            <!-- Vestimentas-->
             <div class="menu-item" data-id="4" data-name="Conjunto De Niño" data-price="15000">
                 <a href="productos/conjuntos/hombre/ConjuntoDeNiño.html">
                     <div class="img-container">
@@ -110,16 +104,13 @@
                 </a>
                 <button class="add-to-cart-btn" data-id="4">Añadir al Carrito</button>
             </div>
-
         </section>
     </div>
 
-    <!-- Seccion de gorras-->
+    <!-- Sección Gorras -->
     <div id="gorras" class="categoria">
         <h2 style="text-align: center; background-color: #edfff3;">Gorras:</h2>
-
         <section class="menu">
-            <!-- Gorras -->
             <div class="menu-item" data-id="5" data-name="Gorra Roja New York" data-price="8500">
                 <a href="productos/conjuntos/hombre/ConjuntoDeNiño.html">
                     <div class="img-container">
@@ -131,19 +122,18 @@
                 </a>
                 <button class="add-to-cart-btn" data-id="5">Añadir al Carrito</button>
             </div>
-
         </section>
     </div>
 
     <section class="creditos">
         <h3>Para Obtener Más Información Ingresa Al Siguiente Canal De WhatsApp:</h3>
         <div class="link">
-            <a href="https://wa.me/message/UWJAIK2PHCWJH1" class="rectangulo">Sigue el canal de
+            <a href="https://whatsapp.com/channel/0029VbBSoksISTkJGZYDiK1l" class="rectangulo">Sigue el canal de
                 FashionStore M&V 💜</a>
         </div>
     </section>
 
-    <!-- Panel de Carrito (NUEVO) -->
+    <!-- Panel de Carrito -->
     <div id="cartBackdrop"></div>
     <div id="cartPanel">
         <div class="cart-header">
@@ -159,8 +149,7 @@
         </div>
 
         <div id="cartItemsContainer">
-            <p id="emptyCartMessage" style="text-align: center; color: #999; margin-top: 20px;">El carrito está vacío.
-            </p>
+            <p id="emptyCartMessage" style="text-align: center; color: #999; margin-top: 20px;">El carrito está vacío.</p>
         </div>
 
         <div class="cart-footer">
@@ -169,22 +158,17 @@
                 <span id="cartTotal">$0</span>
             </div>
 
-            <button id="checkoutButton" onclick="processOrder()">
-                Enviar Pedido por WhatsApp
-            </button>
+            <button id="checkoutButton" onclick="processOrder()">Enviar Pedido por WhatsApp</button>
 
-            <p style="font-size: 0.8rem; color: #9d63ff; margin-top: 10px;">Se generará un Código Único para tu
-                confirmación.</p>
+            <p style="font-size: 0.8rem; color: #9d63ff; margin-top: 10px;">
+                Se generará un Código Único para tu confirmación.
+            </p>
         </div>
     </div>
 
-
     <script>
-        // --- CONFIGURACIÓN ---
-        const WHATSAPP_NUMBER = "56954356331"; // Reemplaza con tu número de WhatsApp real (ej: 56912345678)
+        const WHATSAPP_NUMBER = "56954356331";
         const CART_STORAGE_KEY = 'fashionStoreCart';
-
-        // --- REFERENCIAS DEL DOM ---
         const cartButton = document.getElementById('cartButton');
         const cartPanel = document.getElementById('cartPanel');
         const cartBackdrop = document.getElementById('cartBackdrop');
@@ -196,199 +180,109 @@
         const searchInput = document.getElementById('searchInput');
         const productItems = document.querySelectorAll('.menu-item');
 
-        // --- LÓGICA DE ALMACENAMIENTO Y LECTURA ---
-
-        /** Lee el carrito de localStorage */
         function getCart() {
             const cartString = localStorage.getItem(CART_STORAGE_KEY);
             return cartString ? JSON.parse(cartString) : [];
         }
 
-        /** Guarda el carrito en localStorage */
         function saveCart(cart) {
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
             updateCartUI(cart);
         }
 
-        /** Formatea un número como moneda local */
         function formatCurrency(number) {
-            return new Intl.NumberFormat('es-CL', {
-                style: 'currency',
-                currency: 'CLP',
-                minimumFractionDigits: 0
-            }).format(number);
+            return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0 }).format(number);
         }
 
-        // --- FUNCIONES DE CARRITO ---
-
-        /** Añade un producto al carrito */
         function addItemToCart(id, name, price) {
             let cart = getCart();
             const existingItemIndex = cart.findIndex(item => item.id === id);
-
-            if (existingItemIndex > -1) {
-                cart[existingItemIndex].quantity += 1;
-            } else {
-                cart.push({ id, name, price: parseFloat(price), quantity: 1 });
-            }
+            if (existingItemIndex > -1) cart[existingItemIndex].quantity += 1;
+            else cart.push({ id, name, price: parseFloat(price), quantity: 1 });
             saveCart(cart);
             openCartPanel();
         }
 
-        /** Cambia la cantidad de un artículo en el carrito */
         window.changeQuantity = function (id, delta) {
             let cart = getCart();
             const itemIndex = cart.findIndex(item => item.id === id);
-
             if (itemIndex > -1) {
                 cart[itemIndex].quantity += delta;
-                if (cart[itemIndex].quantity <= 0) {
-                    cart.splice(itemIndex, 1); // Eliminar si la cantidad es cero o menos
-                }
+                if (cart[itemIndex].quantity <= 0) cart.splice(itemIndex, 1);
                 saveCart(cart);
             }
         }
 
-        /** Elimina un artículo del carrito */
         window.removeItem = function (id) {
             let cart = getCart();
             cart = cart.filter(item => item.id !== id);
             saveCart(cart);
         }
 
-        /** Actualiza la interfaz del carrito */
         function updateCartUI(cart) {
             cartItemsContainer.innerHTML = '';
-
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
             cartCountSpan.textContent = totalItems;
             cartTotalSpan.textContent = formatCurrency(totalAmount);
-
             emptyCartMessage.style.display = cart.length === 0 ? 'block' : 'none';
             checkoutButton.disabled = cart.length === 0;
 
             if (cart.length > 0) {
                 cart.forEach(item => {
-                    const itemElement = document.createElement('div');
-                    itemElement.className = 'cart-item';
-                    itemElement.innerHTML = `
-                        <div style="flex: 1; min-width: 0; padding-right: 10px;">
-                            <p style="font-weight: 600; margin: 0; color: #7b4eff;">${item.name}</p>
-                            <p style="font-size: 0.9rem; color: #555; margin: 0;">${formatCurrency(item.price)} c/u</p>
+                    const el = document.createElement('div');
+                    el.className = 'cart-item';
+                    el.innerHTML = `
+                        <div style="flex:1;padding-right:10px;">
+                            <p style="font-weight:600;margin:0;color:#7b4eff;">${item.name}</p>
+                            <p style="font-size:0.9rem;color:#555;margin:0;">${formatCurrency(item.price)} c/u</p>
                         </div>
                         <div class="cart-item-controls">
-                            <button onclick="changeQuantity('${item.id}', -1)">-</button>
-                            <span style="font-weight: bold; min-width: 20px; text-align: center;">${item.quantity}</span>
-                            <button onclick="changeQuantity('${item.id}', 1)">+</button>
-                            <button onclick="removeItem('${item.id}')" style="background: #ff4eb8;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                            </button>
-                        </div>
-                    `;
-                    cartItemsContainer.appendChild(itemElement);
+                            <button onclick="changeQuantity('${item.id}',-1)">-</button>
+                            <span style="font-weight:bold;">${item.quantity}</span>
+                            <button onclick="changeQuantity('${item.id}',1)">+</button>
+                            <button onclick="removeItem('${item.id}')" style="background:#ff4eb8;">🗑️</button>
+                        </div>`;
+                    cartItemsContainer.appendChild(el);
                 });
             }
         }
 
-        // --- LÓGICA DE CHECKOUT Y WHATSAPP ---
-
-        /** Genera un Código Único de Pedido */
         function generateUniqueCode() {
-            // Código simple: FS- + 6 caracteres alfanuméricos (puedes cambiar el prefijo)
             return 'FS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
         }
 
-        /** Procesa el pedido, genera el código, lo guarda en Firestore y envía a WhatsApp */
         window.processOrder = async function () {
             const cart = getCart();
             if (cart.length === 0) return;
-
             const uniqueCode = generateUniqueCode();
-            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            const productList = cart.map(i => `- ${i.name} (x${i.quantity}) $${i.price}`).join('\n');
 
-            // Construir la lista de productos para el mensaje
-            const productList = cart.map(item => {
-                const itemPrice = formatCurrency(item.price);
-                const itemTotal = formatCurrency(item.price * item.quantity);
-                return `- ${item.name} (c/u: ${itemPrice}) x${item.quantity} (Subtotal: ${itemTotal})`;
-            }).join('\n');
-
-            // Crear objeto de datos para Firestore
-            const pedidoData = {
-                codigo: uniqueCode,
-                fecha: null, // será reemplazado por serverTimestamp al guardar
-                total: total,
-                productos: cart.map(item => ({
-                    nombre: item.name,
-                    cantidad: item.quantity,
-                    precio: item.price,
-                    subtotal: item.price * item.quantity
-                }))
-            };
-
-            try {
-                // 🔥 Guardar pedido en Firestore usando serverTimestamp()
-                const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
-                const { getFirestore, collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
-
-                const firebaseConfig = {
-                    apiKey: "AIzaSyCHYo8LYSyOqgr6tBgo9RXODH0KRwZeowQ",
-                    authDomain: "live-de-eso.firebaseapp.com",
-                    projectId: "live-de-eso",
-                    storageBucket: "live-de-eso.firebasestorage.app",
-                    messagingSenderId: "250545251960",
-                    appId: "1:250545251960:web:94ad354f2650d46d32af8d"
-                };
-
-                const app = initializeApp(firebaseConfig);
-                const db = getFirestore(app);
-
-                // Asignamos serverTimestamp al campo 'fecha'
-                const docRef = await addDoc(collection(db, "pedidos"), {
-                    ...pedidoData,
-                    fecha: serverTimestamp()
-                });
-
-                console.log("✅ Pedido guardado en Firestore con código:", uniqueCode, "id:", docRef.id);
-            } catch (error) {
-                console.error("❌ Error al guardar el pedido:", error);
-                alert("Hubo un error al registrar tu pedido en el sistema, pero puedes enviarlo igual por WhatsApp.");
-            }
-
-            // Mensaje para WhatsApp (mantiene tu formato original)
             const message = `
 *🛍️ PEDIDO FASHIONSTORE M&V 🛍️*
-*CÓDIGO ÚNICO DE PEDIDO:* ${uniqueCode}
+*CÓDIGO:* ${uniqueCode}
 
-¡Hola! Me gustaría realizar el siguiente pedido:
-
----
-*Detalle del Pedido*
 ${productList}
----
-*Costo Total:* ${formatCurrency(total)}
 
-*IMPORTANTE:* Usa este código para confirmar tu pedido con el personal.
-
-*DATOS DE CONTACTO:*
+Total: ${formatCurrency(total)}
 (Por favor, ingresa tu nombre y dirección de envío aquí)
 `;
+
             const encodedMessage = encodeURIComponent(message.trim());
-            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodedMessage}`;
 
-            // Abrir WhatsApp en nueva pestaña
-            window.open(whatsappUrl, '_blank');
+            // ✅ Enlace universal compatible con iPhone, Android y PC
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                window.location.href = whatsappUrl;
+            } else {
+                window.open(whatsappUrl, '_blank');
+            }
 
-            // Opcional: limpiar carrito después de enviar
             localStorage.removeItem(CART_STORAGE_KEY);
             updateCartUI([]);
             closeCartPanel();
         };
-
-
-        // --- LÓGICA DE INTERFAZ (UI) ---
 
         function openCartPanel() {
             cartPanel.classList.add('open');
@@ -400,40 +294,25 @@ ${productList}
             cartBackdrop.style.display = 'none';
         }
 
-        // --- EVENT LISTENERS ---
-
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Cargar carrito inicial
             updateCartUI(getCart());
-
-            // 2. Listener para abrir carrito
             cartButton.addEventListener('click', openCartPanel);
             cartBackdrop.addEventListener('click', closeCartPanel);
-
-            // 3. Listener para botones de añadir al carrito
-            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    const productElement = e.target.closest('.menu-item');
-                    const name = productElement.getAttribute('data-name');
-                    const price = productElement.getAttribute('data-price');
-
-                    addItemToCart(id, name, price);
+            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    const el = e.target.closest('.menu-item');
+                    addItemToCart(el.dataset.id, el.dataset.name, el.dataset.price);
                 });
             });
-
-            // 4. Lógica de búsqueda (Mantenida de tu código original)
             searchInput.addEventListener('input', () => {
                 const filtro = searchInput.value.toLowerCase();
-                productItems.forEach(producto => {
-                    const nombre = producto.querySelector('h3').textContent.toLowerCase();
-                    producto.style.display = nombre.includes(filtro) ? 'block' : 'none';
+                productItems.forEach(p => {
+                    const nombre = p.querySelector('h3').textContent.toLowerCase();
+                    p.style.display = nombre.includes(filtro) ? 'block' : 'none';
                 });
             });
         });
     </script>
 
 </body>
-
 </html>
-
